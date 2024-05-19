@@ -9,19 +9,17 @@ namespace Jellyfin.Plugin.Shikimori
 {
     public class ShikimoriClientManager
     {
+        private const string _clientName = "Shikimori Jellyfin plugin";
+        private const string _clientId = "4jL1c_MSgZ4qjC8yNotwYGXQmhJ9wFCukQMm_48vGCY";
+
         private ShikimoriClient _shikimoriClient;
         private ILogger _logger;
 
         public ShikimoriClientManager(ILogger<ShikimoriClientManager> logger)
         {
-            // TODO: Think about logger.
-            // Maybe it's not a good idea to pass main logger
-
-            // TODO: Maybe move constants like name and client id to other file?
-
             _shikimoriClient = new ShikimoriClient(logger, new ClientSettings(
-                        "Shikimori Jellyfin plugin",
-                        "4jL1c_MSgZ4qjC8yNotwYGXQmhJ9wFCukQMm_48vGCY",
+                        _clientName,
+                        _clientId,
                         ""
                         ));
 
@@ -47,22 +45,6 @@ namespace Jellyfin.Plugin.Shikimori
         public async Task<AnimeMangaBase?> GetAnimeAsync(long id)
         {
             var result = await _shikimoriClient.Animes.GetAnime(id);
-
-            return result;
-        }
-    }
-
-    public static class AnimeMangaBaseExtensions
-    {
-        public static RemoteSearchResult ToSearchResult(this AnimeMangaBase anime)
-        {
-            var result = new RemoteSearchResult();
-            result.Name = anime.Name;
-            result.ProductionYear = anime.ReleasedOn?.DateTime.Year;
-            result.ProviderIds = new Dictionary<string, string>() { { "Shikimori", anime.Id.ToString() } };
-            result.ImageUrl = "https://shikimori.one" + anime.Image.Original;
-            result.SearchProviderName = "Shikimori";
-
 
             return result;
         }

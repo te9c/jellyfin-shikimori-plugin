@@ -9,7 +9,7 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
 {
     private readonly ILogger<ShikimoriSeriesProvider> _log;
     private readonly ShikimoriClientManager _shikimoriClientManager;
-    public string Name { get; } = "Shikimori";
+    public string Name { get; } = ShikimoriPlugin.ProviderName;
 
 
     public ShikimoriSeriesProvider(ILogger<ShikimoriSeriesProvider> logger, ShikimoriClientManager shikimoriClientManager)
@@ -24,7 +24,7 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
 
         var result = new List<RemoteSearchResult>();
 
-        var aid = searchInfo.ProviderIds.GetValueOrDefault("Shikimori");
+        var aid = searchInfo.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
         long id;
 
         if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))

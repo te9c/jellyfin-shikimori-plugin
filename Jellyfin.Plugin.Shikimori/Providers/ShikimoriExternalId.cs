@@ -7,14 +7,14 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 {
     public class ShikimoriExternalId : IExternalId
     {
-        public string ProviderName => "Shikimori";
+        public string ProviderName => ShikimoriPlugin.ProviderName;
 
-        public string Key => "Shikimori";
+        public string Key => ShikimoriPlugin.ProviderId;
 
         public ExternalIdMediaType? Type
             => ExternalIdMediaType.Series;
 
-        public string? UrlFormatString => "https://shikimori.one/animes/{0}";
+        public string? UrlFormatString => ShikimoriPlugin.ShikimoriBaseUrl + "/animes/{0}";
 
         public bool Supports(IHasProviderIds item)
             => item is Series;
