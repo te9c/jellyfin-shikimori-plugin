@@ -6,11 +6,9 @@ namespace Jellyfin.Plugin.Shikimori
 {
     public class ShikimoriServiceRegistrator : IPluginServiceRegistrator
     {
-
         public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
         {
             serviceCollection.AddSingleton<ShikimoriClientManager>();
         }
-
     }
 }
