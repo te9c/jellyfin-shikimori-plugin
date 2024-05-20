@@ -26,15 +26,26 @@ namespace Jellyfin.Plugin.Shikimori
             _logger = logger;
         }
 
-        public async Task<List<RemoteSearchResult>> SearchAnimeAsync(string name)
+        public async Task<List<RemoteSearchResult>> SearchAnimeSeriesAsync(string name, int? year = null)
         {
             var searchResult = await _shikimoriClient.Animes.GetAnime(new AnimeRequestSettings
             {
-                search = name
+                search = name,
+                limit = ShikimoriPlugin.Instance?.Configuration.SearchLimit,
+                kind = "tv",
             });
 
             var result = new List<RemoteSearchResult>();
-            foreach (var anime in searchResult)
+            foreach (var anime in searchResult.Where(i =>
+            {
+                if (year.HasValue && i.AiredOn.HasValue)
+                {
+                    // One year tolerance
+                    return Math.Abs(year.Value - i.AiredOn.Value.Year) <= 1;
+                }
+
+                return true;
+            }))
             {
                 result.Add(anime.ToSearchResult());
             }
@@ -44,9 +55,7 @@ namespace Jellyfin.Plugin.Shikimori
 
         public async Task<AnimeMangaBase?> GetAnimeAsync(long id)
         {
-            var result = await _shikimoriClient.Animes.GetAnime(id);
-
-            return result;
+            return await _shikimoriClient.Animes.GetAnime(id);
         }
     }
 }

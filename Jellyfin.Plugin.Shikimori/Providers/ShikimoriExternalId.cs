@@ -18,6 +18,5 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
         public bool Supports(IHasProviderIds item)
             => item is Series;
-
     }
 }

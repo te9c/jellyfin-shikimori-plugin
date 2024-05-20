@@ -38,7 +38,7 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
 
         if (!String.IsNullOrEmpty(searchInfo.Name))
         {
-            var searchResult = await _shikimoriClientManager.SearchAnimeAsync(searchInfo.Name);
+            var searchResult = await _shikimoriClientManager.SearchAnimeSeriesAsync(searchInfo.Name, searchInfo.Year);
             result.AddRange(searchResult);
         }
 
