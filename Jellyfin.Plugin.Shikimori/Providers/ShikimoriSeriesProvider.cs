@@ -1,7 +1,9 @@
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
+using ShikimoriSharp.Classes;
 
 namespace Jellyfin.Plugin.Shikimori.Providers;
 
@@ -38,20 +40,45 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
 
         if (!String.IsNullOrEmpty(searchInfo.Name))
         {
-            var searchResult = await _shikimoriClientManager.SearchAnimeSeriesAsync(searchInfo.Name, searchInfo.Year);
+            var searchResult = await _shikimoriClientManager.SearchAnimeSeriesAsync(AnimeType.Tv, searchInfo.Name, searchInfo.Year);
             result.AddRange(searchResult);
         }
 
         return result;
     }
 
-    public Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
+    public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var result = new MetadataResult<Series>();
+        AnimeID? anime = null;
+        var aid = info.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
+        long id;
+        if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
+        {
+            anime = await _shikimoriClientManager.GetAnimeAsync(id);
+            result.QueriedById = true;
+        }
+        else
+        {
+            _log.LogDebug($"Searching {info.Name}");
+            var searchResult = await _shikimoriClientManager.GetAnimeAsync(AnimeType.Tv, info.Name);
+            result.QueriedById = false;
+        }
+
+        if (anime != null)
+        {
+            result.HasMetadata = true;
+            result.Item = anime.ToSeries();
+            result.Provider = ShikimoriPlugin.ProviderName;
+        }
+
+        return result;
     }
 
-    public Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
+    public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var httpClient = new HttpClient();
+
+        return await httpClient.GetAsync(url);
     }
 }
