@@ -8,12 +8,15 @@ namespace Jellyfin.Plugin.Shikimori
 {
     public class ShikimoriPlugin : BasePlugin<PluginConfiguration>
     {
+        public IHttpClientFactory HttpClientFactory { get; init; }
         public ShikimoriPlugin(
                 IApplicationPaths applicationPaths,
-                IXmlSerializer xmlSerialize)
+                IXmlSerializer xmlSerialize,
+                IHttpClientFactory httpClientFactory)
             : base(applicationPaths, xmlSerialize)
         {
             Instance = this;
+            HttpClientFactory = httpClientFactory;
         }
 
         public const string ProviderName = "Shikimori";

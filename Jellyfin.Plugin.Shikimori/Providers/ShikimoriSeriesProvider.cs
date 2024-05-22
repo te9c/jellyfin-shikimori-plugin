@@ -77,8 +77,8 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
 
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
-        var httpClient = new HttpClient();
+        var httpClient = ShikimoriPlugin.Instance!.HttpClientFactory.CreateClient();
 
-        return await httpClient.GetAsync(url);
+        return await httpClient.GetAsync(url, cancellationToken);
     }
 }
