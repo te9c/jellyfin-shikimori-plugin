@@ -12,4 +12,9 @@
       <PackageReference Include="ShikimoriSharp" Version="1.3.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Configuration\config.html" />
+      <EmbeddedResource Include="Configuration\config.html" />
+    </ItemGroup>
+
 </Project>

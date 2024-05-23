@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Shikimori</title>
+</head>
+<body>
+<div id="shikimoriConfigPage" data-role="page" class="page type-interior pluginConfigurationPage"
+     data-require="emby-input,emby-button,emby-select,emby-checkbox">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="shikimoriConfigForm">
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="searchLimit">Search limit</label>
+                    <input id="searchLimit" name="searchLimit" type="number" is="emby-input" min="0"/>
+                    <div class="fieldDescription">Must be a number in range [1;50]</div>
+                </div>
+
+                <div class="selectContainer">
+                    <label class="selectLabel" for="searchTitlePreference">Search Title Preference</label>
+                    <select is="emby-select" id="searchTitlePreference" name="searchTitlePreference"
+                            class="emby-select-withcolor emby-select">
+                        <option id="optLanguageRomaji" value="romaji">Romaji</option>
+                        <option id="optLanguageRussian" value="russian">Russian</option>
+                    </select>
+                </div>
+                <div class="selectContainer">
+                    <label class="selectLabel" for="titlePreference">Title Preference</label>
+                    <select is="emby-select" id="titlePreference" name="titlePreference"
+                            class="emby-select-withcolor emby-select">
+                        <option id="optLanguageRomaji" value="romaji">Romaji</option>
+                        <option id="optLanguageRussian" value="russian">Russian</option>
+                        <option id="optLanguageJapanese" value="japanese">Japanese</option>
+                    </select>
+                </div>
+                <div class="selectContainer">
+                    <label class="selectLabel" for="originalTitlePreference">Original Title Preference</label>
+                    <select is="emby-select" id="originalTitlePreference" name="originalTitlePreference"
+                            class="emby-select-withcolor emby-select">
+                        <option id="optLanguageRomaji" value="romaji">Romaji</option>
+                        <option id="optLanguageRussian" value="russian">Russian</option>
+                        <option id="optLanguageJapanese" value="japanese">Japanese</option>
+                    </select>
+                </div>
+                <div class="selectContainer">
+                    <label class="selectLabel" for="genreTitleLanguagePreference">Genre Language Preference</label>
+                    <select is="emby-select" id="genreTitleLanguagePreference" name="genreTitleLanguagePreference"
+                            class="emby-select-withcolor emby-select">
+                        <option id="optLanguageEnglish" value="english">English</option>
+                        <option id="optLanguageRussian" value="russian">Russian</option>
+                    </select>
+                </div>
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                        <span>Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var shikimoriConfig = {
+            pluginUniqueId: '7edb2a28-5b8a-4fe8-ae11-d941315eb862',
+
+            loadConfiguration: function () {
+                Dashboard.showLoadingMsg();
+
+                ApiClient.getPluginConfiguration(shikimoriConfg.pluginUniqueId).then(function (config) {
+                    document.getElementById('searchLimit').value = config.SearchLimit;
+                    document.getElementById('searchTitlePreference').value = config.SearchTitlePreference;
+                    document.getElementById('titlePreference').value = config.TitlePreference;
+                    document.getElementById('originalTitlePreference').value = config.OriginalTitlePreference;
+                    document.getElementById('genreTitleLanguagePreference').value = config.GenreTitleLanguagePreference;
+
+                    Dashboard.hideLoadingMsg();
+                })
+            },
+
+            saveConfiguration: function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(shikimoriConfig.pluginUniqueId).then(function (config) {
+                    config.SearchLimit = document.getElementById('searchLimit').value;
+                    config.SearchTitlePreference = document.getElementById('searchTitlePreference').value;
+                    config.TitlePreference = document.getElementById('titlePreference').value;
+                    config.OriginalTitlePreference = document.getElementById('originalTitlePreference').value;
+                    config.GenreTitleLanguagePreference = document.getElementById('genreTitleLanguagePreference').value;
+
+                    ApiClient.updatePluginConfiguration(shikimoriConfig.pluginUniqueId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                    })
+                })
+            }
+        }
+
+        document.getElementById('shikimoriConfigPage').addEventListener('pageshow', function () {
+            shikimoriConfig.loadConfiguration();
+        });
+
+        document.getElementById('shikimoriConfigPage').addEventListener('submit', function (e) {
+            e.preventDefault();
+            shikimoriConfig.saveConfiguration();
+        });
+    </script>
+</div>
+</body>
+</html>
