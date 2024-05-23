@@ -10,6 +10,10 @@
     <div data-role="content">
         <div class="content-primary">
             <form id="shikimoriConfigForm">
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h2 class="sectionTitle">Shikimori settings</h2>
+                </div>
+                
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="searchLimit">Search limit</label>
                     <input id="searchLimit" name="searchLimit" type="number" is="emby-input" min="0"/>
@@ -20,34 +24,34 @@
                     <label class="selectLabel" for="searchTitlePreference">Search Title Preference</label>
                     <select is="emby-select" id="searchTitlePreference" name="searchTitlePreference"
                             class="emby-select-withcolor emby-select">
-                        <option id="optLanguageRomaji" value="romaji">Romaji</option>
-                        <option id="optLanguageRussian" value="russian">Russian</option>
+                        <option id="optLanguageRomaji" value="Romaji">Romaji</option>
+                        <option id="optLanguageRussian" value="Russian">Russian</option>
                     </select>
                 </div>
                 <div class="selectContainer">
                     <label class="selectLabel" for="titlePreference">Title Preference</label>
                     <select is="emby-select" id="titlePreference" name="titlePreference"
                             class="emby-select-withcolor emby-select">
-                        <option id="optLanguageRomaji" value="romaji">Romaji</option>
-                        <option id="optLanguageRussian" value="russian">Russian</option>
-                        <option id="optLanguageJapanese" value="japanese">Japanese</option>
+                        <option id="optLanguageRomaji" value="Romaji">Romaji</option>
+                        <option id="optLanguageRussian" value="Russian">Russian</option>
+                        <option id="optLanguageJapanese" value="Japanese">Japanese</option>
                     </select>
                 </div>
                 <div class="selectContainer">
                     <label class="selectLabel" for="originalTitlePreference">Original Title Preference</label>
                     <select is="emby-select" id="originalTitlePreference" name="originalTitlePreference"
                             class="emby-select-withcolor emby-select">
-                        <option id="optLanguageRomaji" value="romaji">Romaji</option>
-                        <option id="optLanguageRussian" value="russian">Russian</option>
-                        <option id="optLanguageJapanese" value="japanese">Japanese</option>
+                        <option id="optLanguageRomaji" value="Romaji">Romaji</option>
+                        <option id="optLanguageRussian" value="Russian">Russian</option>
+                        <option id="optLanguageJapanese" value="Japanese">Japanese</option>
                     </select>
                 </div>
                 <div class="selectContainer">
                     <label class="selectLabel" for="genreTitleLanguagePreference">Genre Language Preference</label>
                     <select is="emby-select" id="genreTitleLanguagePreference" name="genreTitleLanguagePreference"
                             class="emby-select-withcolor emby-select">
-                        <option id="optLanguageEnglish" value="english">English</option>
-                        <option id="optLanguageRussian" value="russian">Russian</option>
+                        <option id="optLanguageEnglish" value="English">English</option>
+                        <option id="optLanguageRussian" value="Russian">Russian</option>
                     </select>
                 </div>
                 <div>
@@ -65,7 +69,7 @@
             loadConfiguration: function () {
                 Dashboard.showLoadingMsg();
 
-                ApiClient.getPluginConfiguration(shikimoriConfg.pluginUniqueId).then(function (config) {
+                ApiClient.getPluginConfiguration(shikimoriConfig.pluginUniqueId).then(function (config) {
                     document.getElementById('searchLimit').value = config.SearchLimit;
                     document.getElementById('searchTitlePreference').value = config.SearchTitlePreference;
                     document.getElementById('titlePreference').value = config.TitlePreference;
