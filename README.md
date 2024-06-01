@@ -5,6 +5,12 @@
 
 This plugin adds the metadata provider for [Shikimori](https://shikimori.one)
 
+# Installation
+
+1. Go to Jellyfin's dashboard -> Plugins -> Repositories.
+2. Add new repositoriy with url: `https://raw.githubusercontent.com/te9c/jellyfin-shikimori-plugin/main/manifest.json`.
+3. Install Shikimori plugin from the catalogue.
+
 # Build
 
 1. Build plugin with the following command:

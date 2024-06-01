@@ -1,0 +1,21 @@
+[
+    {
+        "guid": "7edb2a28-5b8a-4fe8-ae11-d941315eb862",
+        "name": "Shikimori",
+        "description": "Adds metadata for anime tv and movies",
+        "overview": "Metadata provider for Shikimori",
+        "owner": "te9c",
+        "category": "Metadata",
+        "versions": [
+            {
+                "version": "1.0.0.0",
+                "changelog": "init\n",
+                "targetAbi": "10.9.0",
+                "sourceUrl": "https://github.com/te9c/jellyfin-shikimori-plugin/releases/download/1.0.0.0/shikimori_1.0.0.0.zip",
+                "checksum": "9a3acdabcd5b762e79968258b8cc7a7b",
+                "timestamp": "2024-06-01T14:30:44Z"
+            }
+        ],
+        "imageUrl": "https://shikimori.one/assets/layouts/l-top_menu-v2/glyph.svg"
+    }
+]
