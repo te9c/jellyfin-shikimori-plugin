@@ -53,7 +53,7 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
         long id;
         if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
         {
-            anime = await _shikimoriClientManager.GetAnimeAsync(id);
+            anime = await _shikimoriClientManager.GetAnimeAsync(id, AnimeType.Tv);
             result.QueriedById = true;
         }
         else

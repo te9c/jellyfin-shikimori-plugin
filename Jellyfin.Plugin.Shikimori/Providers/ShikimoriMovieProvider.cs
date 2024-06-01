@@ -54,7 +54,7 @@ public class ShikimoriMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>
         long id;
         if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
         {
-            anime = await _shikimoriClientManager.GetAnimeAsync(id);
+            anime = await _shikimoriClientManager.GetAnimeAsync(id, AnimeType.Movie);
             result.QueriedById = true;
         }
         else

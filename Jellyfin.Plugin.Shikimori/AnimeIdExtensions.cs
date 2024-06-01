@@ -47,11 +47,6 @@ namespace Jellyfin.Plugin.Shikimori
         // TODO: Reduce amount of repeating code
         public static Movie ToMovie(this AnimeID anime)
         {
-            if (anime.Kind != "movie")
-            {
-                throw new ArgumentException("AnimeID kind is not movie", "anime");
-            }
-
             PluginConfiguration config = ShikimoriPlugin.Instance!.Configuration;
 
             var result = new Movie
@@ -74,11 +69,6 @@ namespace Jellyfin.Plugin.Shikimori
 
         public static Series ToSeries(this AnimeID anime)
         {
-            if (anime.Kind != "tv" || anime.Kind != "ona")
-            {
-                throw new ArgumentException("AnimeID kind is not series", "anime");
-            }
-
             PluginConfiguration config = ShikimoriPlugin.Instance!.Configuration;
 
             var result = new Series

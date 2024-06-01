@@ -17,10 +17,10 @@ namespace Jellyfin.Plugin.Shikimori
         private const string _clientName = "Shikimori Jellyfin plugin";
         private const string _clientId = "4jL1c_MSgZ4qjC8yNotwYGXQmhJ9wFCukQMm_48vGCY";
 
-        private readonly string[] _movieKinds = { "movie" };
+        public readonly string[] MovieKinds = { "movie" };
         // I actually dont know what is tv_13, tv_24 and tv_48
         // But shikimori's api provide this kinds, so I include them
-        private readonly string[] _tvKinds = { "tv", "ona", "tv_13", "tv_24", "tv_48" };
+        public readonly string[] TvKinds = { "tv", "ona", "tv_13", "tv_24", "tv_48" };
 
         private ShikimoriClient _shikimoriClient;
         private ILogger _logger;
@@ -44,8 +44,8 @@ namespace Jellyfin.Plugin.Shikimori
                 limit = ShikimoriPlugin.Instance?.Configuration.SearchLimit,
                 kind = type switch
                 {
-                    AnimeType.Movie => string.Join(',', _movieKinds),
-                    AnimeType.Tv => string.Join(',', _tvKinds),
+                    AnimeType.Movie => string.Join(',', MovieKinds),
+                    AnimeType.Tv => string.Join(',', TvKinds),
                     _ => null
                 },
             })).ToList();
@@ -75,8 +75,8 @@ namespace Jellyfin.Plugin.Shikimori
 
             return type switch
             {
-                AnimeType.Tv => _tvKinds.Contains(anime.Kind) ? anime : null,
-                AnimeType.Movie => _movieKinds.Contains(anime.Kind) ? anime : null,
+                AnimeType.Tv => TvKinds.Contains(anime.Kind) ? anime : null,
+                AnimeType.Movie => MovieKinds.Contains(anime.Kind) ? anime : null,
                 _ => anime,
             };
         }
@@ -89,8 +89,8 @@ namespace Jellyfin.Plugin.Shikimori
                 limit = 1,
                 kind = type switch
                 {
-                    AnimeType.Movie => string.Join(',', _movieKinds),
-                    AnimeType.Tv => string.Join(',', _tvKinds),
+                    AnimeType.Movie => string.Join(',', MovieKinds),
+                    AnimeType.Tv => string.Join(',', TvKinds),
                     _ => null
                 },
             });
