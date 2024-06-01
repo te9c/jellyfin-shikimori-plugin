@@ -3,6 +3,7 @@ using Jellyfin.Plugin.Shikimori.Configuration;
 using MediaBrowser.Model.Entities;
 using ShikimoriSharp.Classes;
 using MediaBrowser.Controller.Entities.Movies;
+using MediaBrowser.Controller.Entities;
 
 namespace Jellyfin.Plugin.Shikimori
 {
@@ -44,45 +45,35 @@ namespace Jellyfin.Plugin.Shikimori
             };
         }
 
-        // TODO: Reduce amount of repeating code
-        public static Movie ToMovie(this AnimeID anime)
+        private static void FillBaseItem(BaseItem item, AnimeID anime)
         {
             PluginConfiguration config = ShikimoriPlugin.Instance!.Configuration;
 
-            var result = new Movie
-            {
-                Name = GetPreferedTitle(config.TitlePreference, anime),
-                OriginalTitle = GetPreferedTitle(config.OriginalTitlePreference, anime),
-                Overview = anime.DescriptionHtml,
-                ProductionYear = anime.AiredOn?.Year,
-                PremiereDate = anime.AiredOn?.DateTime,
-                EndDate = anime.ReleasedOn?.DateTime,
-                Genres = anime.Genres.Select(i => GetPreferedGenreTitle(config.GenreTitleLanguagePreference, i)).ToArray(),
-                CommunityRating = float.Parse(anime.Score),
-                OfficialRating = FormatRating(anime.Rating),
-                Studios = anime.Studios.Select(i => { return i.Name; }).ToArray(),
-                ProviderIds = new Dictionary<string, string> { { ShikimoriPlugin.ProviderName, anime.Id.ToString() } },
-            };
+            item.Name = GetPreferedTitle(config.TitlePreference, anime);
+            item.OriginalTitle = GetPreferedTitle(config.OriginalTitlePreference, anime);
+            item.Overview = anime.DescriptionHtml;
+            item.ProductionYear = anime.AiredOn?.Year;
+            item.PremiereDate = anime.AiredOn?.DateTime;
+            item.EndDate = anime.ReleasedOn?.DateTime;
+            item.Genres = anime.Genres.Select(i => GetPreferedGenreTitle(config.GenreTitleLanguagePreference, i)).ToArray();
+            item.CommunityRating = float.Parse(anime.Score);
+            item.OfficialRating = FormatRating(anime.Rating);
+            item.Studios = anime.Studios.Select(i => { return i.Name; }).ToArray();
+            item.ProviderIds = new Dictionary<string, string> { { ShikimoriPlugin.ProviderName, anime.Id.ToString() } };
+        }
+
+        public static Movie ToMovie(this AnimeID anime)
+        {
+            var result = new Movie();
+            FillBaseItem(result, anime);
 
             return result;
         }
 
         public static Series ToSeries(this AnimeID anime)
         {
-            PluginConfiguration config = ShikimoriPlugin.Instance!.Configuration;
-
-            var result = new Series
+            var result = new Series()
             {
-                Name = GetPreferedTitle(config.TitlePreference, anime),
-                OriginalTitle = GetPreferedTitle(config.OriginalTitlePreference, anime),
-                Overview = anime.DescriptionHtml,
-                ProductionYear = anime.AiredOn?.Year,
-                PremiereDate = anime.AiredOn?.DateTime,
-                EndDate = anime.ReleasedOn?.DateTime,
-                Genres = anime.Genres.Select(i => GetPreferedGenreTitle(config.GenreTitleLanguagePreference, i)).ToArray(),
-                CommunityRating = float.Parse(anime.Score),
-                OfficialRating = FormatRating(anime.Rating),
-                Studios = anime.Studios.Select(i => { return i.Name; }).ToArray(),
                 Status = anime.Status switch
                 {
                     "released" => SeriesStatus.Ended,
@@ -90,8 +81,8 @@ namespace Jellyfin.Plugin.Shikimori
                     "anons" => SeriesStatus.Unreleased,
                     _ => null,
                 },
-                ProviderIds = new Dictionary<string, string> { { ShikimoriPlugin.ProviderName, anime.Id.ToString() } },
             };
+            FillBaseItem(result, anime);
 
             return result;
         }

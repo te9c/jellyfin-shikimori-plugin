@@ -18,14 +18,15 @@ namespace Jellyfin.Plugin.Shikimori
 
         public static RemoteSearchResult ToSearchResult(this AnimeMangaBase anime)
         {
-            var result = new RemoteSearchResult();
-            result.Name = GetPreferedTitle(ShikimoriPlugin.Instance!.Configuration.SearchTitlePreference, anime);
-            result.ProductionYear = anime.AiredOn?.DateTime.Year;
-            result.PremiereDate = anime.AiredOn?.DateTime;
-            result.ProviderIds = new Dictionary<string, string>() { { ShikimoriPlugin.ProviderId, anime.Id.ToString() } };
-            result.ImageUrl = ShikimoriPlugin.ShikimoriBaseUrl + anime.Image.Original;
-            result.SearchProviderName = ShikimoriPlugin.ProviderName;
-
+            var result = new RemoteSearchResult()
+            {
+                Name = GetPreferedTitle(ShikimoriPlugin.Instance!.Configuration.SearchTitlePreference, anime),
+                ProductionYear = anime.AiredOn?.DateTime.Year,
+                PremiereDate = anime.AiredOn?.DateTime,
+                ProviderIds = new Dictionary<string, string>() { { ShikimoriPlugin.ProviderId, anime.Id.ToString() } },
+                ImageUrl = ShikimoriPlugin.ShikimoriBaseUrl + anime.Image.Original,
+                SearchProviderName = ShikimoriPlugin.ProviderName
+            };
 
             return result;
         }
