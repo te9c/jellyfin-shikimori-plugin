@@ -16,12 +16,12 @@ public class ShikimoriImageProvider : IRemoteImageProvider
     {
         _shikimoriClientManager = shikimoriClientManager;
     }
-    
+
     public bool Supports(BaseItem item)
     {
         return item is Series;
     }
-    
+
     public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
     {
         return new[] { ImageType.Primary };
@@ -42,7 +42,7 @@ public class ShikimoriImageProvider : IRemoteImageProvider
         var anime = await _shikimoriClientManager.GetAnimeAsync(id);
         if (anime != null)
         {
-            RemoteImageInfo primary = new ()
+            RemoteImageInfo primary = new()
             {
                 ProviderName = Name,
                 Type = ImageType.Primary,

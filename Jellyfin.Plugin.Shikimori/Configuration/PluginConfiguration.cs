@@ -39,7 +39,7 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
             set => _searchLimit = (value >= 1 && value <= 50) ? value : _searchLimit;
         }
 
-        public SearchTitlePreferenceType SearchTitlePreference { get; set;  }
+        public SearchTitlePreferenceType SearchTitlePreference { get; set; }
         public TitlePreferenceType TitlePreference { get; set; }
         public TitlePreferenceType OriginalTitlePreference { get; set; }
         public GenreTitleLanguagePreferenceType GenreTitleLanguagePreference { get; set; }

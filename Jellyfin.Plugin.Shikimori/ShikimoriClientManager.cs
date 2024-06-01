@@ -12,11 +12,15 @@ namespace Jellyfin.Plugin.Shikimori
         Tv,
         Movie
     }
-    
     public class ShikimoriClientManager
     {
         private const string _clientName = "Shikimori Jellyfin plugin";
         private const string _clientId = "4jL1c_MSgZ4qjC8yNotwYGXQmhJ9wFCukQMm_48vGCY";
+
+        private readonly string[] _movieKinds = { "movie" };
+        // I actually dont know what is tv_13, tv_24 and tv_48
+        // But shikimori's api provide this kinds, so I include them
+        private readonly string[] _tvKinds = { "tv", "ona", "tv_13", "tv_24", "tv_48" };
 
         private ShikimoriClient _shikimoriClient;
         private ILogger _logger;
@@ -38,24 +42,13 @@ namespace Jellyfin.Plugin.Shikimori
             {
                 search = name,
                 limit = ShikimoriPlugin.Instance?.Configuration.SearchLimit,
-                kind = type switch { 
-                    AnimeType.Movie => "movie",
-                    AnimeType.Tv => "tv",
-                    _ => null 
+                kind = type switch
+                {
+                    AnimeType.Movie => string.Join(',', _movieKinds),
+                    AnimeType.Tv => string.Join(',', _tvKinds),
+                    _ => null
                 },
             })).ToList();
-            
-            // kostil
-            // because in shikimori API tv and ona is different kinds of media, but ona is technically tv series
-            if (type == AnimeType.Tv && searchResult.Count() < ShikimoriPlugin.Instance?.Configuration.SearchLimit)
-            {
-                searchResult.AddRange(await _shikimoriClient.Animes.GetAnime(new AnimeRequestSettings
-                {
-                    search = name,
-                    limit = ShikimoriPlugin.Instance?.Configuration.SearchLimit - searchResult.Count(),
-                    kind = "ona",
-                }));
-            }
 
             var result = new List<RemoteSearchResult>();
             foreach (var anime in searchResult.Where(i =>
@@ -75,10 +68,19 @@ namespace Jellyfin.Plugin.Shikimori
             return result;
         }
 
-        public async Task<AnimeID?> GetAnimeAsync(long id)
+        public async Task<AnimeID?> GetAnimeAsync(long id, AnimeType? type = null)
         {
-            return await _shikimoriClient.Animes.GetAnime(id);
+            var anime = await _shikimoriClient.Animes.GetAnime(id);
+            if (anime == null) return anime;
+
+            return type switch
+            {
+                AnimeType.Tv => _tvKinds.Contains(anime.Kind) ? anime : null,
+                AnimeType.Movie => _movieKinds.Contains(anime.Kind) ? anime : null,
+                _ => anime,
+            };
         }
+
         public async Task<AnimeID?> GetAnimeAsync(AnimeType type, string name)
         {
             var searchResult = await _shikimoriClient.Animes.GetAnime(new AnimeRequestSettings
@@ -87,8 +89,8 @@ namespace Jellyfin.Plugin.Shikimori
                 limit = 1,
                 kind = type switch
                 {
-                    AnimeType.Movie => "movie",
-                    AnimeType.Tv => "tv",
+                    AnimeType.Movie => string.Join(',', _movieKinds),
+                    AnimeType.Tv => string.Join(',', _tvKinds),
                     _ => null
                 },
             });

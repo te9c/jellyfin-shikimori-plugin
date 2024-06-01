@@ -22,8 +22,6 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
 
     public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
     {
-        _log.LogDebug($"Searching metadata for {searchInfo.Name}");
-
         var result = new List<RemoteSearchResult>();
 
         var aid = searchInfo.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
@@ -31,9 +29,9 @@ public class ShikimoriSeriesProvider : IRemoteMetadataProvider<Series, SeriesInf
 
         if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
         {
-            var aidResult = await _shikimoriClientManager.GetAnimeAsync(id);
-            if (aidResult != null) {
-                // TODO: Check for kind
+            var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, AnimeType.Tv);
+            if (aidResult != null)
+            {
                 result.Add(aidResult.ToSearchResult());
             }
         }

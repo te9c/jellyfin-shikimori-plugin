@@ -28,15 +28,17 @@ public class ShikimoriMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>
         var aid = searchInfo.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
         long id;
 
-        if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id)) {
-            var aidResult = await _shikimoriClientManager.GetAnimeAsync(id);
-            if (aidResult != null) {
-                // TODO: Check for kind
+        if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
+        {
+            var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, AnimeType.Movie);
+            if (aidResult != null)
+            {
                 result.Add(aidResult.ToSearchResult());
             }
         }
 
-        if (!String.IsNullOrEmpty(searchInfo.Name)) {
+        if (!String.IsNullOrEmpty(searchInfo.Name))
+        {
             var searchResult = await _shikimoriClientManager.SearchAnimeSeriesAsync(AnimeType.Movie, searchInfo.Name, searchInfo.Year);
             result.AddRange(searchResult);
         }
@@ -50,16 +52,20 @@ public class ShikimoriMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>
         AnimeID? anime = null;
         var aid = info.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
         long id;
-        if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id)) {
+        if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
+        {
             anime = await _shikimoriClientManager.GetAnimeAsync(id);
             result.QueriedById = true;
-        } else {
+        }
+        else
+        {
             _log.LogDebug($"Searching {info.Name}");
             anime = await _shikimoriClientManager.GetAnimeAsync(AnimeType.Movie, info.Name);
             result.QueriedById = false;
         }
 
-        if (anime != null) {
+        if (anime != null)
+        {
             result.HasMetadata = true;
             result.Item = anime.ToMovie();
             result.Provider = ShikimoriPlugin.ProviderName;
