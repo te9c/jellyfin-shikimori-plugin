@@ -46,7 +46,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
                 {
                     ProviderName = Name,
                     Type = ImageType.Primary,
-                    Url = ShikimoriPlugin.ShikimoriBaseUrl + anime.poster.originalUrl,
+                    Url = anime.poster.originalUrl,
                 };
                 result.Add(primary);
             }
