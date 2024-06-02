@@ -19,7 +19,6 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
         public PluginConfiguration()
         {
             SearchLimit = 10;
-            SearchTitlePreference = TitlePreferenceType.Russian;
             TitlePreference = TitlePreferenceType.Russian;
             OriginalTitlePreference = TitlePreferenceType.Romaji;
             GenreTitleLanguagePreference = GenreTitleLanguagePreferenceType.Russian;
@@ -32,7 +31,6 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
             set => _searchLimit = (value >= 1 && value <= 50) ? value : _searchLimit;
         }
 
-        public TitlePreferenceType SearchTitlePreference { get; set; }
         public TitlePreferenceType TitlePreference { get; set; }
         public TitlePreferenceType OriginalTitlePreference { get; set; }
         public GenreTitleLanguagePreferenceType GenreTitleLanguagePreference { get; set; }

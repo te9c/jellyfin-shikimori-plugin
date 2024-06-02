@@ -13,21 +13,10 @@
                 <div class="sectionTitleContainer flex align-items-center">
                     <h2 class="sectionTitle">Shikimori settings</h2>
                 </div>
-                
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="searchLimit">Search limit</label>
                     <input id="searchLimit" name="searchLimit" type="number" is="emby-input" min="1" max="50"/>
                     <div class="fieldDescription">Must be a number in range [1;50]</div>
-                </div>
-
-                <div class="selectContainer">
-                    <label class="selectLabel" for="searchTitlePreference">Search Title Preference</label>
-                    <select is="emby-select" id="searchTitlePreference" name="searchTitlePreference"
-                            class="emby-select-withcolor emby-select">
-                        <option id="optLanguageRomaji" value="Romaji">Romaji</option>
-                        <option id="optLanguageRussian" value="Russian">Russian</option>
-                        <option id="optLanguageJapanese" value="Japanese">Japanese</option>
-                    </select>
                 </div>
                 <div class="selectContainer">
                     <label class="selectLabel" for="titlePreference">Title Preference</label>
@@ -72,7 +61,6 @@
 
                 ApiClient.getPluginConfiguration(shikimoriConfig.pluginUniqueId).then(function (config) {
                     document.getElementById('searchLimit').value = config.SearchLimit;
-                    document.getElementById('searchTitlePreference').value = config.SearchTitlePreference;
                     document.getElementById('titlePreference').value = config.TitlePreference;
                     document.getElementById('originalTitlePreference').value = config.OriginalTitlePreference;
                     document.getElementById('genreTitleLanguagePreference').value = config.GenreTitleLanguagePreference;
@@ -85,7 +73,6 @@
                 Dashboard.showLoadingMsg();
                 ApiClient.getPluginConfiguration(shikimoriConfig.pluginUniqueId).then(function (config) {
                     config.SearchLimit = document.getElementById('searchLimit').value;
-                    config.SearchTitlePreference = document.getElementById('searchTitlePreference').value;
                     config.TitlePreference = document.getElementById('titlePreference').value;
                     config.OriginalTitlePreference = document.getElementById('originalTitlePreference').value;
                     config.GenreTitleLanguagePreference = document.getElementById('genreTitleLanguagePreference').value;

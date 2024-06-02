@@ -173,7 +173,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             var result = new RemoteSearchResult()
             {
-                Name = GetPreferedTitle(config.SearchTitlePreference),
+                Name = name,
                 ProductionYear = airedOn?.year,
                 PremiereDate = airedOn?.ToDateTime(),
                 ImageUrl = poster?.mainUrl,
