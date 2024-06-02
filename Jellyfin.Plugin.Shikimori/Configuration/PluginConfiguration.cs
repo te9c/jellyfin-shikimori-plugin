@@ -1,5 +1,4 @@
 using MediaBrowser.Model.Plugins;
-using ShikimoriSharp.Bases;
 
 namespace Jellyfin.Plugin.Shikimori.Configuration
 {
@@ -8,12 +7,6 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
         Romaji,
         Russian,
         Japanese
-    }
-
-    public enum SearchTitlePreferenceType
-    {
-        Romaji,
-        Russian
     }
 
     public enum GenreTitleLanguagePreferenceType
@@ -26,10 +19,10 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
         public PluginConfiguration()
         {
             SearchLimit = 10;
-            SearchTitlePreference = SearchTitlePreferenceType.Russian;
+            SearchTitlePreference = TitlePreferenceType.Russian;
             TitlePreference = TitlePreferenceType.Russian;
             OriginalTitlePreference = TitlePreferenceType.Romaji;
-            GenreTitleLanguagePreference = GenreTitleLanguagePreferenceType.English;
+            GenreTitleLanguagePreference = GenreTitleLanguagePreferenceType.Russian;
         }
         private int _searchLimit;
         public int SearchLimit
@@ -39,7 +32,7 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
             set => _searchLimit = (value >= 1 && value <= 50) ? value : _searchLimit;
         }
 
-        public SearchTitlePreferenceType SearchTitlePreference { get; set; }
+        public TitlePreferenceType SearchTitlePreference { get; set; }
         public TitlePreferenceType TitlePreference { get; set; }
         public TitlePreferenceType OriginalTitlePreference { get; set; }
         public GenreTitleLanguagePreferenceType GenreTitleLanguagePreference { get; set; }

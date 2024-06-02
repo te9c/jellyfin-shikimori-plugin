@@ -1,9 +1,6 @@
+using Jellyfin.Plugin.Shikimori.Api;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
-using ShikimoriSharp;
-using ShikimoriSharp.Bases;
-using ShikimoriSharp.Classes;
-using ShikimoriSharp.Settings;
 
 namespace Jellyfin.Plugin.Shikimori
 {
@@ -18,30 +15,24 @@ namespace Jellyfin.Plugin.Shikimori
         private const string _clientId = "4jL1c_MSgZ4qjC8yNotwYGXQmhJ9wFCukQMm_48vGCY";
 
         public readonly string[] MovieKinds = { "movie" };
-        // I actually dont know what is tv_13, tv_24 and tv_48
-        // But shikimori's api provide this kinds, so I include them
-        public readonly string[] TvKinds = { "tv", "ona", "tv_13", "tv_24", "tv_48" };
+        public readonly string[] TvKinds = { "tv", "ona" };
 
-        private ShikimoriClient _shikimoriClient;
+        private ShikimoriApi _shikimoriClient;
         private ILogger _logger;
 
         public ShikimoriClientManager(ILogger<ShikimoriClientManager> logger)
         {
-            _shikimoriClient = new ShikimoriClient(logger, new ClientSettings(
-                        _clientName,
-                        _clientId,
-                        ""
-                        ));
+            _shikimoriClient = new ShikimoriApi(_clientName);
 
             _logger = logger;
         }
 
         public async Task<List<RemoteSearchResult>> SearchAnimeSeriesAsync(AnimeType type, string name, int? year = null)
         {
-            var searchResult = (await _shikimoriClient.Animes.GetAnime(new AnimeRequestSettings
+            var searchResult = (await _shikimoriClient.GetAnimesAsync(new SearchOptions
             {
                 search = name,
-                limit = ShikimoriPlugin.Instance?.Configuration.SearchLimit,
+                limit = ShikimoriPlugin.Instance!.Configuration.SearchLimit,
                 kind = type switch
                 {
                     AnimeType.Movie => string.Join(',', MovieKinds),
@@ -53,10 +44,10 @@ namespace Jellyfin.Plugin.Shikimori
             var result = new List<RemoteSearchResult>();
             foreach (var anime in searchResult.Where(i =>
             {
-                if (year.HasValue && i.AiredOn.HasValue)
+                if (year.HasValue && i.airedOn != null && i.airedOn.year.HasValue)
                 {
                     // One year tolerance
-                    return Math.Abs(year.Value - i.AiredOn.Value.Year) <= 1;
+                    return Math.Abs(year.Value - i.airedOn.year.Value) <= 1;
                 }
 
                 return true;
@@ -68,22 +59,22 @@ namespace Jellyfin.Plugin.Shikimori
             return result;
         }
 
-        public async Task<AnimeID?> GetAnimeAsync(long id, AnimeType? type = null)
+        public async Task<Anime?> GetAnimeAsync(long id, AnimeType? type = null)
         {
-            var anime = await _shikimoriClient.Animes.GetAnime(id);
+            var anime = await _shikimoriClient.GetAnimeAsync(id);
             if (anime == null) return anime;
 
             return type switch
             {
-                AnimeType.Tv => TvKinds.Contains(anime.Kind) ? anime : null,
-                AnimeType.Movie => MovieKinds.Contains(anime.Kind) ? anime : null,
+                AnimeType.Tv => TvKinds.Contains(anime.kind) ? anime : null,
+                AnimeType.Movie => MovieKinds.Contains(anime.kind) ? anime : null,
                 _ => anime,
             };
         }
 
-        public async Task<AnimeID?> GetAnimeAsync(AnimeType type, string name)
+        public async Task<Anime?> GetAnimeAsync(AnimeType type, string name)
         {
-            var searchResult = await _shikimoriClient.Animes.GetAnime(new AnimeRequestSettings
+            var searchResult = await _shikimoriClient.GetAnimesAsync(new SearchOptions
             {
                 search = name,
                 limit = 1,
@@ -95,13 +86,7 @@ namespace Jellyfin.Plugin.Shikimori
                 },
             });
 
-            AnimeID? result = null;
-            var id = searchResult.FirstOrDefault()?.Id;
-            if (id is not null)
-            {
-                result = await GetAnimeAsync(id.Value);
-            }
-            return result;
+            return searchResult.FirstOrDefault();
         }
     }
 }

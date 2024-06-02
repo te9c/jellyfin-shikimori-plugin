@@ -40,13 +40,13 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             }
 
             var anime = await _shikimoriClientManager.GetAnimeAsync(id);
-            if (anime != null)
+            if (anime?.poster?.originalUrl != null)
             {
                 RemoteImageInfo primary = new()
                 {
                     ProviderName = Name,
                     Type = ImageType.Primary,
-                    Url = ShikimoriPlugin.ShikimoriBaseUrl + anime.Image.Original,
+                    Url = ShikimoriPlugin.ShikimoriBaseUrl + anime.poster.originalUrl,
                 };
                 result.Add(primary);
             }

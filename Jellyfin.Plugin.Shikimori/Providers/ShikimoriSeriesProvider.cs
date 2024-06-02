@@ -1,9 +1,9 @@
+using Jellyfin.Plugin.Shikimori.Api;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
-using ShikimoriSharp.Classes;
 
 namespace Jellyfin.Plugin.Shikimori.Providers
 {
@@ -48,7 +48,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
             var result = new MetadataResult<Series>();
-            AnimeID? anime = null;
+            Anime? anime = null;
             var aid = info.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
             long id;
             if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))

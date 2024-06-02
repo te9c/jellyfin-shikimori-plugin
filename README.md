@@ -19,5 +19,5 @@ This plugin adds the metadata provider for [Shikimori](https://shikimori.one)
 dotnet publish --configuration Release --output bin
 ```
 
-2. Move dll's `Jellyfin.Plugin.Shikimori.dll`, `Newtonsoft.Json.dll`, `Polly.dll`, `ShikimoriSharp.dll`
+2. Move dll's `Jellyfin.Plugin.Shikimori.dll` and `Newtonsoft.Json.dll`
    from the `bin` folder to jellyfin's `plugin/shikimori` (you probably need to create that folder)
