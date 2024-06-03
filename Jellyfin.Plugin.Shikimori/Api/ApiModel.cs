@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Jellyfin.Plugin.Shikimori.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -156,7 +157,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             item.Name = GetPreferedTitle(config.TitlePreference);
             item.OriginalTitle = GetPreferedTitle(config.OriginalTitlePreference);
-            item.Overview = descriptionHtml;
+            item.Overview = string.IsNullOrEmpty(description) ? null : descriptionHtml;
             item.ProductionYear = airedOn?.year;
             item.PremiereDate = airedOn?.ToDateTime();
             item.EndDate = releasedOn?.ToDateTime();
@@ -173,7 +174,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             var result = new RemoteSearchResult()
             {
-                Name = name,
+                Name = GetPreferedTitle(config.SearchTitlePreference),
                 ProductionYear = airedOn?.year,
                 PremiereDate = airedOn?.ToDateTime(),
                 ImageUrl = poster?.mainUrl,
@@ -208,6 +209,5 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             return result;
         }
-
     }
 }

@@ -27,7 +27,7 @@ namespace Jellyfin.Plugin.Shikimori
             _logger = logger;
         }
 
-        public async Task<List<RemoteSearchResult>> SearchAnimeSeriesAsync(AnimeType type, string name, int? year = null)
+        public async Task<List<RemoteSearchResult>> SearchAnimesAsync(AnimeType type, string name, int? year = null)
         {
             var searchResult = (await _shikimoriClient.GetAnimesAsync(new SearchOptions
             {

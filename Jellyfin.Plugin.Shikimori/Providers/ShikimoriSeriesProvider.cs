@@ -38,7 +38,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (!String.IsNullOrEmpty(searchInfo.Name))
             {
-                var searchResult = await _shikimoriClientManager.SearchAnimeSeriesAsync(AnimeType.Tv, searchInfo.Name, searchInfo.Year);
+                var searchResult = await _shikimoriClientManager.SearchAnimesAsync(AnimeType.Tv, searchInfo.Name, searchInfo.Year);
                 result.AddRange(searchResult);
             }
 
