@@ -79,12 +79,35 @@ namespace Jellyfin.Plugin.Shikimori.Api
         public int? month { get; set; }
         public int? day { get; set; }
 
-        public DateTime? ToDateTime() {
+        public DateTime? ToDateTime()
+        {
             if (year != null && month != null && day != null)
                 return new DateTime(year.Value, month.Value, day.Value);
 
             return null;
         }
+    }
+
+    public class Person
+    {
+        public int id { get; set; }
+        public string? name { get; set; }
+        public string? russian { get; set; }
+        public string? japanese { get; set; }
+
+        public Poster? poster { get; set; }
+
+        public bool isMangaka { get; set; } = false;
+        public bool isProducer { get; set; } = false;
+        public bool isSeyu { get; set; } = false;
+    }
+
+    public class PersonRole
+    {
+        public int id { get; set; }
+        public Person? person { get; set; }
+        public string[]? rolesEn { get; set; }
+        public string[]? rolesRu { get; set; }
     }
 
     public class Anime
@@ -115,6 +138,8 @@ namespace Jellyfin.Plugin.Shikimori.Api
         public Poster? poster { get; set; }
 
         public string? status { get; set; }
+
+        public PersonRole[]? personRoles { get; set; }
 
         private string? GetPreferedTitle(TitlePreferenceType type)
         {

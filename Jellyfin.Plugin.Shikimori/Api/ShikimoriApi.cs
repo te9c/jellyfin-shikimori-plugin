@@ -58,6 +58,28 @@ namespace Jellyfin.Plugin.Shikimori.Api
     }
 
     status
+
+    personRoles {
+      id
+      person {
+        id
+        name
+        russian
+        japanese
+
+        poster {
+          id
+          originalUrl
+          mainUrl
+        }
+
+        isMangaka
+        isProducer
+        isSeyu
+      }
+      rolesEn
+      rolesRu
+    }
   }
 }";
 
