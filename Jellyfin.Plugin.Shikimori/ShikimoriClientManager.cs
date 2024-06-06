@@ -9,6 +9,7 @@ namespace Jellyfin.Plugin.Shikimori
         Tv,
         Movie
     }
+
     public class ShikimoriClientManager
     {
         private const string _clientName = "Shikimori Jellyfin plugin";
@@ -27,7 +28,7 @@ namespace Jellyfin.Plugin.Shikimori
             _logger = logger;
         }
 
-        public async Task<List<RemoteSearchResult>> SearchAnimesAsync(AnimeType type, string name, int? year = null)
+        public async Task<List<RemoteSearchResult>> SearchAnimesAsync(string name, AnimeType? type = null,  int? year = null)
         {
             var searchResult = (await _shikimoriClient.GetAnimesAsync(new SearchOptions
             {
@@ -72,7 +73,7 @@ namespace Jellyfin.Plugin.Shikimori
             };
         }
 
-        public async Task<Anime?> GetAnimeAsync(AnimeType type, string name)
+        public async Task<Anime?> GetAnimeAsync(string name, AnimeType? type = null)
         {
             var searchResult = await _shikimoriClient.GetAnimesAsync(new SearchOptions
             {

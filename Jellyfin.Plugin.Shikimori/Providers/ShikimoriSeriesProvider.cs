@@ -38,7 +38,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (!String.IsNullOrEmpty(searchInfo.Name))
             {
-                var searchResult = await _shikimoriClientManager.SearchAnimesAsync(AnimeType.Tv, searchInfo.Name, searchInfo.Year);
+                var searchResult = await _shikimoriClientManager.SearchAnimesAsync(searchInfo.Name, AnimeType.Tv, searchInfo.Year);
                 result.AddRange(searchResult);
             }
 
@@ -59,7 +59,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             else
             {
                 _log.LogDebug($"Searching {info.Name}");
-                anime = await _shikimoriClientManager.GetAnimeAsync(AnimeType.Tv, info.Name);
+                anime = await _shikimoriClientManager.GetAnimeAsync(info.Name, AnimeType.Tv);
                 result.QueriedById = false;
             }
 
