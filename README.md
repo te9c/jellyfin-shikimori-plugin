@@ -21,3 +21,8 @@ dotnet publish --configuration Release --output bin
 
 2. Move dll's `Jellyfin.Plugin.Shikimori.dll` and `Newtonsoft.Json.dll`
    from the `bin` folder to jellyfin's `plugin/shikimori` (you probably need to create that folder)
+
+# Releasing
+
+The best way to release is to use [JPRM](https://github.com/oddstr13/jellyfin-plugin-repository-manager), which can package the plugin
+and add it to the `manifest.json`.
