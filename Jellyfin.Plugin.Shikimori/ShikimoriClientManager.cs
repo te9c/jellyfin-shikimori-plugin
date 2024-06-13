@@ -1,3 +1,4 @@
+using System.Reflection;
 using Jellyfin.Plugin.Shikimori.Api;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace Jellyfin.Plugin.Shikimori
 
         public async Task<List<RemoteSearchResult>> SearchAnimesAsync(string name, AnimeType? type = null,  int? year = null)
         {
-            var searchResult = (await _shikimoriClient.GetAnimesAsync(new SearchOptions
+            var searchResult = (await _shikimoriClient.SearchAnimesAsync(new SearchOptions
             {
                 search = name,
                 limit = ShikimoriPlugin.Instance!.Configuration.SearchLimit,
@@ -75,7 +76,7 @@ namespace Jellyfin.Plugin.Shikimori
 
         public async Task<Anime?> GetAnimeAsync(string name, AnimeType? type = null)
         {
-            var searchResult = await _shikimoriClient.GetAnimesAsync(new SearchOptions
+            var searchResult = await _shikimoriClient.SearchAnimesAsync(new SearchOptions
             {
                 search = name,
                 limit = 1,
@@ -87,7 +88,14 @@ namespace Jellyfin.Plugin.Shikimori
                 },
             });
 
-            return searchResult.FirstOrDefault();
+            if (!searchResult.Any())
+            {
+                return null;
+            }
+            
+            var anime = await _shikimoriClient.GetAnimeAsync(searchResult.First().id);
+
+            return anime;
         }
     }
 }

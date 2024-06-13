@@ -10,7 +10,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
         public string ApplicationName { get; init; }
 
         private const string ApiLink = $"{ShikimoriPlugin.ShikimoriBaseUrl}/api/graphql";
-        private const string Query = @"{
+        private const string AnimeQuery = @"{
   animes({0}) {
     id
 
@@ -82,18 +82,34 @@ namespace Jellyfin.Plugin.Shikimori.Api
     }
   }
 }";
+        private const string SearchQuery = @"{
+  animes({0}) {
+    id
+
+    name
+    russian
+    japanese
+    kind
+
+    airedOn {
+      year
+      month
+      day
+    }
+
+    poster {
+      id
+      previewUrl
+    }
+  }
+}";
 
         public ShikimoriApi(string applicationName)
         {
             ApplicationName = applicationName;
         }
 
-        public async Task<IEnumerable<Anime>> GetAnimesAsync(SearchOptions options)
-        {
-            var request = new GraphQlRequest()
-            {
-                query = Query.Replace("{0}", options.ToString())
-            };
+        private async Task<GraphQlResponse?> WebRequestApi(GraphQlRequest request) {
             var httpClient = ShikimoriPlugin.Instance!.HttpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Add("User-Agent", ApplicationName);
 
@@ -102,9 +118,19 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             response.EnsureSuccessStatusCode();
 
-            var graphqlResponse = JsonConvert.DeserializeObject<GraphQlResponse>(await response.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<GraphQlResponse>(await response.Content.ReadAsStringAsync(), new AnimeBaseConverter());
+        }
 
-            return graphqlResponse?.data?.animes == null ? Enumerable.Empty<Anime>() : graphqlResponse.data.animes;
+        public async Task<IEnumerable<AnimeBase>> SearchAnimesAsync(SearchOptions options)
+        {
+            var request = new GraphQlRequest()
+            {
+                query = SearchQuery.Replace("{0}", options.ToString())
+            };
+
+            var graphQlResponse = await WebRequestApi(request);
+
+            return graphQlResponse?.data?.animes == null ? Enumerable.Empty<AnimeBase>() : graphQlResponse.data.animes;
         }
 
         public async Task<Anime?> GetAnimeAsync(long id)
@@ -113,8 +139,18 @@ namespace Jellyfin.Plugin.Shikimori.Api
             {
                 ids = id.ToString(),
             };
+            var request = new GraphQlRequest()
+            {
+              query = AnimeQuery.Replace("{0}", options.ToString())
+            };
 
-            return (await GetAnimesAsync(options))?.FirstOrDefault();
+            var graphQlResponse = await WebRequestApi(request);
+            var animes = graphQlResponse?.data?.animes;
+            if (animes == null || animes.Count() == 0) return null;
+
+            var animeJson = animes.First();
+            
+            return (Anime)animeJson;
         }
     }
 }

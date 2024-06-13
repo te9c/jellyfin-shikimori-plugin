@@ -5,12 +5,15 @@ using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 
 namespace Jellyfin.Plugin.Shikimori.Api
 {
     public class Data
     {
-        public Anime[]? animes { get; set; }
+        public AnimeBase[]? animes { get; set; }
     }
 
     public class GraphQlRequest
@@ -66,11 +69,13 @@ namespace Jellyfin.Plugin.Shikimori.Api
         public string? name { get; set; }
     }
 
+    // TODO: Make PosterBase class and move id and previewUrl to it.
     public class Poster
     {
         public long id { get; set; }
         public string? originalUrl { get; set; }
         public string? mainUrl { get; set; }
+        public string? previewUrl { get; set; }
     }
 
     public class IncompleteDate
@@ -110,38 +115,18 @@ namespace Jellyfin.Plugin.Shikimori.Api
         public string[]? rolesRu { get; set; }
     }
 
-    public class Anime
-    {
+    public class AnimeBase {
         public long id { get; set; }
 
         public string? name { get; set; }
-        public string? russian { get; set; }
         public string? japanese { get; set; }
-        public string? english { get; set; }
-
-        public string? description { get; set; }
-        public string? descriptionHtml { get; set; }
-        public string? descriptionSource { get; set; }
-
-        public IncompleteDate? airedOn { get; set; }
-        public IncompleteDate? releasedOn { get; set; }
-
-        public Genre[]? genres { get; set; }
+        public string? russian { get; set; }
         public string? kind { get; set; }
 
-        public float score { get; set; }
-
-        public string? rating { get; set; }
-
-        public Studio[]? studios { get; set; }
-
+        public IncompleteDate? airedOn { get; set; }
         public Poster? poster { get; set; }
 
-        public string? status { get; set; }
-
-        public PersonRole[]? personRoles { get; set; }
-
-        private string? GetPreferedTitle(TitlePreferenceType type)
+        protected string? GetPreferedTitle(TitlePreferenceType type)
         {
             // TODO: Fallback languages?
             return type switch
@@ -152,7 +137,48 @@ namespace Jellyfin.Plugin.Shikimori.Api
                 _ => null
             };
         }
-        private string? GetPreferedGenreTitle(GenreTitleLanguagePreferenceType type, Genre genre)
+
+        public RemoteSearchResult ToSearchResult()
+        {
+            var config = ShikimoriPlugin.Instance!.Configuration;
+
+            var result = new RemoteSearchResult()
+            {
+                Name = GetPreferedTitle(config.SearchTitlePreference),
+                ProductionYear = airedOn?.year,
+                PremiereDate = airedOn?.ToDateTime(),
+                ImageUrl = poster?.previewUrl,
+                SearchProviderName = ShikimoriPlugin.ProviderName,
+                ProviderIds = new Dictionary<string, string>() { { ShikimoriPlugin.ProviderId, id.ToString() } },
+            };
+
+            return result;
+        }
+    }
+
+    public class Anime : AnimeBase
+    {
+        public string? english { get; set; }
+
+        public string? description { get; set; }
+        public string? descriptionHtml { get; set; }
+        public string? descriptionSource { get; set; }
+
+        public IncompleteDate? releasedOn { get; set; }
+
+        public Genre[]? genres { get; set; }
+
+        public float score { get; set; }
+
+        public string? rating { get; set; }
+
+        public Studio[]? studios { get; set; }
+
+        public string? status { get; set; }
+
+        public PersonRole[]? personRoles { get; set; }
+
+        internal string? GetPreferedGenreTitle(GenreTitleLanguagePreferenceType type, Genre genre)
         {
             return type switch
             {
@@ -193,23 +219,6 @@ namespace Jellyfin.Plugin.Shikimori.Api
             item.ProviderIds = new Dictionary<string, string> { { ShikimoriPlugin.ProviderName, id.ToString() } };
         }
 
-        public RemoteSearchResult ToSearchResult()
-        {
-            var config = ShikimoriPlugin.Instance!.Configuration;
-
-            var result = new RemoteSearchResult()
-            {
-                Name = GetPreferedTitle(config.SearchTitlePreference),
-                ProductionYear = airedOn?.year,
-                PremiereDate = airedOn?.ToDateTime(),
-                ImageUrl = poster?.mainUrl,
-                SearchProviderName = ShikimoriPlugin.ProviderName,
-                ProviderIds = new Dictionary<string, string>() { { ShikimoriPlugin.ProviderId, id.ToString() } },
-            };
-
-            return result;
-        }
-
         public Movie ToMovie()
         {
             var result = new Movie();
@@ -233,6 +242,13 @@ namespace Jellyfin.Plugin.Shikimori.Api
             FillBaseItem(result);
 
             return result;
+        }
+    }
+
+    public class AnimeBaseConverter : CustomCreationConverter<AnimeBase>
+    {
+        public override AnimeBase Create(Type objectType) {
+            return new Anime();
         }
     }
 }
