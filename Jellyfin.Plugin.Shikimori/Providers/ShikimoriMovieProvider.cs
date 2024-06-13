@@ -68,6 +68,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             {
                 result.HasMetadata = true;
                 result.Item = anime.ToMovie();
+                // result.People = anime.GetPeopleInfo();
                 result.Provider = ShikimoriPlugin.ProviderName;
             }
 

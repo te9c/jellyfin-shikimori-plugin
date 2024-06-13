@@ -59,7 +59,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
     status
 
-    personRoles {
+    personRoles @skip(if: true) {
       id
       person {
         id
@@ -79,7 +79,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
       }
       rolesEn
       rolesRu
-    }
+      }
   }
 }";
         private const string SearchQuery = @"{

@@ -8,6 +8,8 @@ using MediaBrowser.Model.Providers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
+// Yeah I know that this model is total mess.
+// But it's works. kinda.
 
 namespace Jellyfin.Plugin.Shikimori.Api
 {
@@ -243,6 +245,25 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             return result;
         }
+
+        // public List<PersonInfo>? GetPeopleInfo() {
+        //     var result = new List<PersonInfo>();
+        //     if (personRoles == null || !personRoles.Any()) {
+        //         return null;
+        //     }
+        //
+        //     foreach (var person in personRoles) {
+        //         PeopleHelper.AddPerson(result, new PersonInfo {
+        //                 Name = person.person?.russian,
+        //                 ImageUrl = person.person?.poster?.mainUrl,
+        //                 Role = person.rolesRu?.FirstOrDefault(),
+        //                 Type = Jellyfin.Data.Enums.PersonKind.Creator,
+        //                 ProviderIds = new Dictionary<string, string>() {{ShikimoriPlugin.ProviderName, this.id.ToString()}}
+        //                 });
+        //     }
+        //
+        //     return result;
+        // }
     }
 
     public class AnimeBaseConverter : CustomCreationConverter<AnimeBase>
