@@ -30,7 +30,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
             {
-                var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Movie);
+                var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Movie).ConfigureAwait(false);
                 if (aidResult != null)
                 {
                     result.Add(aidResult.ToSearchResult());
@@ -39,7 +39,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (!String.IsNullOrEmpty(searchInfo.Name))
             {
-                var searchResult = await _shikimoriClientManager.SearchAnimesAsync(searchInfo.Name, cancellationToken, AnimeType.Movie, searchInfo.Year);
+                var searchResult = await _shikimoriClientManager.SearchAnimesAsync(searchInfo.Name, cancellationToken, AnimeType.Movie, searchInfo.Year).ConfigureAwait(false);
                 result.AddRange(searchResult);
             }
 
@@ -54,13 +54,13 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             long id;
             if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
             {
-                anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Movie);
+                anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Movie).ConfigureAwait(false);
                 result.QueriedById = true;
             }
             else
             {
                 _log.LogDebug($"Searching {info.Name}");
-                anime = await _shikimoriClientManager.GetAnimeAsync(info.Name, cancellationToken, AnimeType.Movie);
+                anime = await _shikimoriClientManager.GetAnimeAsync(info.Name, cancellationToken, AnimeType.Movie).ConfigureAwait(false);
                 result.QueriedById = false;
             }
 
@@ -79,7 +79,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
         {
             var httpClient = ShikimoriPlugin.Instance!.HttpClientFactory.CreateClient();
 
-            return await httpClient.GetAsync(url, cancellationToken);
+            return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }
 }

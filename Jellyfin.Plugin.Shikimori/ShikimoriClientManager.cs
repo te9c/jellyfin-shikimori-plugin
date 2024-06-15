@@ -41,7 +41,7 @@ namespace Jellyfin.Plugin.Shikimori
                     AnimeType.Tv => string.Join(',', TvKinds),
                     _ => null
                 },
-            })).ToList();
+            }).ConfigureAwait(false)).ToList();
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -67,7 +67,7 @@ namespace Jellyfin.Plugin.Shikimori
 
         public async Task<Anime?> GetAnimeAsync(long id, CancellationToken cancellationToken, AnimeType? type = null)
         {
-            var anime = await _shikimoriApi.GetAnimeAsync(id);
+            var anime = await _shikimoriApi.GetAnimeAsync(id).ConfigureAwait(false);
             if (anime == null) return anime;
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -92,7 +92,7 @@ namespace Jellyfin.Plugin.Shikimori
                     AnimeType.Tv => string.Join(',', TvKinds),
                     _ => null
                 },
-            });
+            }).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -101,7 +101,7 @@ namespace Jellyfin.Plugin.Shikimori
                 return null;
             }
 
-            var anime = await GetAnimeAsync(searchResult.First().id, cancellationToken, type);
+            var anime = await GetAnimeAsync(searchResult.First().id, cancellationToken, type).ConfigureAwait(false);
             return anime;
         }
     }

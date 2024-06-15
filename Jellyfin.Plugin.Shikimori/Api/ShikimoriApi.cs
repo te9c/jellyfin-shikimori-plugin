@@ -114,11 +114,11 @@ namespace Jellyfin.Plugin.Shikimori.Api
             httpClient.DefaultRequestHeaders.Add("User-Agent", ApplicationName);
 
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(ApiLink, content);
+            var response = await httpClient.PostAsync(ApiLink, content).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
-            return JsonConvert.DeserializeObject<GraphQlResponse>(await response.Content.ReadAsStringAsync(), new AnimeBaseConverter());
+            return JsonConvert.DeserializeObject<GraphQlResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false), new AnimeBaseConverter());
         }
 
         public async Task<IEnumerable<AnimeBase>> SearchAnimesAsync(SearchOptions options)
@@ -128,7 +128,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
                 query = SearchQuery.Replace("{0}", options.ToString())
             };
 
-            var graphQlResponse = await WebRequestApi(request);
+            var graphQlResponse = await WebRequestApi(request).ConfigureAwait(false);
 
             return graphQlResponse?.data?.animes == null ? Enumerable.Empty<AnimeBase>() : graphQlResponse.data.animes;
         }
@@ -144,7 +144,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
               query = AnimeQuery.Replace("{0}", options.ToString())
             };
 
-            var graphQlResponse = await WebRequestApi(request);
+            var graphQlResponse = await WebRequestApi(request).ConfigureAwait(false);
             var animes = graphQlResponse?.data?.animes;
             if (animes == null || animes.Count() == 0) return null;
 

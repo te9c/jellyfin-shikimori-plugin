@@ -40,7 +40,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
                 return result;
             }
 
-            var anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken);
+            var anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
             if (anime?.poster?.originalUrl != null)
             {
                 RemoteImageInfo primary = new()
@@ -59,7 +59,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
         {
             var httpClient = ShikimoriPlugin.Instance!.HttpClientFactory.CreateClient();
 
-            return await httpClient.GetAsync(url, cancellationToken);
+            return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }
 }
