@@ -19,19 +19,19 @@ namespace Jellyfin.Plugin.Shikimori
         public readonly string[] MovieKinds = { "movie" };
         public readonly string[] TvKinds = { "tv", "ona" };
 
-        private ShikimoriApi _shikimoriClient;
+        private ShikimoriApi _shikimoriApi;
         private ILogger _logger;
 
         public ShikimoriClientManager(ILogger<ShikimoriClientManager> logger)
         {
-            _shikimoriClient = new ShikimoriApi(_clientName);
+            _shikimoriApi = new ShikimoriApi(_clientName);
 
             _logger = logger;
         }
 
-        public async Task<List<RemoteSearchResult>> SearchAnimesAsync(string name, AnimeType? type = null,  int? year = null)
+        public async Task<List<RemoteSearchResult>> SearchAnimesAsync(string name, CancellationToken cancellationToken, AnimeType? type = null, int? year = null)
         {
-            var searchResult = (await _shikimoriClient.SearchAnimesAsync(new SearchOptions
+            var searchResult = (await _shikimoriApi.SearchAnimesAsync(new SearchOptions
             {
                 search = name,
                 limit = ShikimoriPlugin.Instance!.Configuration.SearchLimit,
@@ -42,6 +42,8 @@ namespace Jellyfin.Plugin.Shikimori
                     _ => null
                 },
             })).ToList();
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             var result = new List<RemoteSearchResult>();
             foreach (var anime in searchResult.Where(i =>
@@ -58,13 +60,17 @@ namespace Jellyfin.Plugin.Shikimori
                 result.Add(anime.ToSearchResult());
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             return result;
         }
 
-        public async Task<Anime?> GetAnimeAsync(long id, AnimeType? type = null)
+        public async Task<Anime?> GetAnimeAsync(long id, CancellationToken cancellationToken, AnimeType? type = null)
         {
-            var anime = await _shikimoriClient.GetAnimeAsync(id);
+            var anime = await _shikimoriApi.GetAnimeAsync(id);
             if (anime == null) return anime;
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             return type switch
             {
@@ -74,9 +80,9 @@ namespace Jellyfin.Plugin.Shikimori
             };
         }
 
-        public async Task<Anime?> GetAnimeAsync(string name, AnimeType? type = null)
+        public async Task<Anime?> GetAnimeAsync(string name, CancellationToken cancellationToken, AnimeType? type = null)
         {
-            var searchResult = await _shikimoriClient.SearchAnimesAsync(new SearchOptions
+            var searchResult = await _shikimoriApi.SearchAnimesAsync(new SearchOptions
             {
                 search = name,
                 limit = 1,
@@ -88,13 +94,14 @@ namespace Jellyfin.Plugin.Shikimori
                 },
             });
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (!searchResult.Any())
             {
                 return null;
             }
-            
-            var anime = await _shikimoriClient.GetAnimeAsync(searchResult.First().id);
 
+            var anime = await GetAnimeAsync(searchResult.First().id, cancellationToken, type);
             return anime;
         }
     }

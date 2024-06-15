@@ -4,13 +4,14 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Entities.Movies;
 
 namespace Jellyfin.Plugin.Shikimori.Providers
 {
     public class ShikimoriImageProvider : IRemoteImageProvider
     {
         private ShikimoriClientManager _shikimoriClientManager;
-        public string Name { get; } = "Shikimori";
+        public string Name { get; } = ShikimoriPlugin.ProviderName;
 
         public ShikimoriImageProvider(ShikimoriClientManager shikimoriClientManager)
         {
@@ -19,7 +20,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
         public bool Supports(BaseItem item)
         {
-            return item is Series;
+            return item is Series || item is Movie;
         }
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
@@ -39,7 +40,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
                 return result;
             }
 
-            var anime = await _shikimoriClientManager.GetAnimeAsync(id);
+            var anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken);
             if (anime?.poster?.originalUrl != null)
             {
                 RemoteImageInfo primary = new()

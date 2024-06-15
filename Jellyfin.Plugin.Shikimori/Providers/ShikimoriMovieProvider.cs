@@ -30,7 +30,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
             {
-                var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, AnimeType.Movie);
+                var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Movie);
                 if (aidResult != null)
                 {
                     result.Add(aidResult.ToSearchResult());
@@ -39,7 +39,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (!String.IsNullOrEmpty(searchInfo.Name))
             {
-                var searchResult = await _shikimoriClientManager.SearchAnimesAsync(searchInfo.Name, AnimeType.Movie, searchInfo.Year);
+                var searchResult = await _shikimoriClientManager.SearchAnimesAsync(searchInfo.Name, cancellationToken, AnimeType.Movie, searchInfo.Year);
                 result.AddRange(searchResult);
             }
 
@@ -54,13 +54,13 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             long id;
             if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
             {
-                anime = await _shikimoriClientManager.GetAnimeAsync(id, AnimeType.Movie);
+                anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Movie);
                 result.QueriedById = true;
             }
             else
             {
                 _log.LogDebug($"Searching {info.Name}");
-                anime = await _shikimoriClientManager.GetAnimeAsync(info.Name, AnimeType.Movie);
+                anime = await _shikimoriClientManager.GetAnimeAsync(info.Name, cancellationToken, AnimeType.Movie);
                 result.QueriedById = false;
             }
 
