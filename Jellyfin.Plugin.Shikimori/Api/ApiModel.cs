@@ -210,7 +210,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             item.Name = GetPreferedTitle(config.TitlePreference);
             item.OriginalTitle = GetPreferedTitle(config.OriginalTitlePreference);
-            item.Overview = string.IsNullOrEmpty(description) ? null : descriptionHtml;
+            item.Overview = string.IsNullOrEmpty(description) ? null : description;
             item.ProductionYear = airedOn?.year;
             item.PremiereDate = airedOn?.ToDateTime();
             item.EndDate = releasedOn?.ToDateTime();
