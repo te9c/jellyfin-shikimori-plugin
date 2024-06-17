@@ -55,6 +55,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
       id
       originalUrl
       mainUrl
+      previewUrl
     }
 
     status
@@ -71,6 +72,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
           id
           originalUrl
           mainUrl
+          previewUrl
         }
 
         isMangaka
