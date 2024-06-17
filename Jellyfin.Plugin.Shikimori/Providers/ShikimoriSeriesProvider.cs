@@ -29,7 +29,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
             {
-                var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Tv).ConfigureAwait(false);
+                var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
                 if (aidResult != null)
                 {
                     result.Add(aidResult.ToSearchResult());
@@ -53,7 +53,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             long id;
             if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
             {
-                anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken, AnimeType.Tv).ConfigureAwait(false);
+                anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
                 result.QueriedById = true;
             }
             else
