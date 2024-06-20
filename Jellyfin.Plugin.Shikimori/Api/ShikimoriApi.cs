@@ -59,29 +59,6 @@ namespace Jellyfin.Plugin.Shikimori.Api
     }
 
     status
-
-    personRoles @skip(if: true) {
-      id
-      person {
-        id
-        name
-        russian
-        japanese
-
-        poster {
-          id
-          originalUrl
-          mainUrl
-          previewUrl
-        }
-
-        isMangaka
-        isProducer
-        isSeyu
-      }
-      rolesEn
-      rolesRu
-      }
   }
 }";
         private const string SearchQuery = @"{
@@ -111,7 +88,8 @@ namespace Jellyfin.Plugin.Shikimori.Api
             ApplicationName = applicationName;
         }
 
-        private async Task<GraphQlResponse?> WebRequestApi(GraphQlRequest request) {
+        private async Task<GraphQlResponse?> WebRequestApi(GraphQlRequest request)
+        {
             var httpClient = ShikimoriPlugin.Instance!.HttpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Add("User-Agent", ApplicationName);
 
@@ -120,7 +98,10 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             response.EnsureSuccessStatusCode();
 
-            return JsonConvert.DeserializeObject<GraphQlResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false), new AnimeBaseConverter());
+            return JsonConvert.DeserializeObject<GraphQlResponse>(
+                    await response.Content.ReadAsStringAsync().ConfigureAwait(false),
+                    new AnimeBaseConverter()
+                    );
         }
 
         public async Task<IEnumerable<AnimeBase>> SearchAnimesAsync(SearchOptions options)
@@ -143,7 +124,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
             };
             var request = new GraphQlRequest()
             {
-              query = AnimeQuery.Replace("{0}", options.ToString())
+                query = AnimeQuery.Replace("{0}", options.ToString())
             };
 
             var graphQlResponse = await WebRequestApi(request).ConfigureAwait(false);
@@ -151,7 +132,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
             if (animes == null || animes.Count() == 0) return null;
 
             var animeJson = animes.First();
-            
+
             return (Anime)animeJson;
         }
     }

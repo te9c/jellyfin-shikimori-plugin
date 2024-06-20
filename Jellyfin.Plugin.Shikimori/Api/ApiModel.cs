@@ -95,29 +95,8 @@ namespace Jellyfin.Plugin.Shikimori.Api
         }
     }
 
-    public class Person
+    public class AnimeBase
     {
-        public int id { get; set; }
-        public string? name { get; set; }
-        public string? russian { get; set; }
-        public string? japanese { get; set; }
-
-        public Poster? poster { get; set; }
-
-        public bool isMangaka { get; set; } = false;
-        public bool isProducer { get; set; } = false;
-        public bool isSeyu { get; set; } = false;
-    }
-
-    public class PersonRole
-    {
-        public int id { get; set; }
-        public Person? person { get; set; }
-        public string[]? rolesEn { get; set; }
-        public string[]? rolesRu { get; set; }
-    }
-
-    public class AnimeBase {
         public long id { get; set; }
 
         public string? name { get; set; }
@@ -178,8 +157,6 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
         public string? status { get; set; }
 
-        public PersonRole[]? personRoles { get; set; }
-
         internal string? GetPreferedGenreTitle(GenreTitleLanguagePreferenceType type, Genre genre)
         {
             return type switch
@@ -203,8 +180,9 @@ namespace Jellyfin.Plugin.Shikimori.Api
                 _ => null
             };
         }
-        
-        private string DeleteTagsInText(string text) {
+
+        private string DeleteTagsInText(string text)
+        {
             text = Regex.Replace(text, @"\[.*?\]", ""); // Replace all occurrences of text in square brackets.
             text = Regex.Replace(text, @" ([.,;: ])", "$1"); // Fix trailing spaces left by previous substitue.
 
@@ -252,30 +230,12 @@ namespace Jellyfin.Plugin.Shikimori.Api
 
             return result;
         }
-
-        // public List<PersonInfo>? GetPeopleInfo() {
-        //     var result = new List<PersonInfo>();
-        //     if (personRoles == null || !personRoles.Any()) {
-        //         return null;
-        //     }
-        //
-        //     foreach (var person in personRoles) {
-        //         PeopleHelper.AddPerson(result, new PersonInfo {
-        //                 Name = person.person?.russian,
-        //                 ImageUrl = person.person?.poster?.mainUrl,
-        //                 Role = person.rolesRu?.FirstOrDefault(),
-        //                 Type = Jellyfin.Data.Enums.PersonKind.Creator,
-        //                 ProviderIds = new Dictionary<string, string>() {{ShikimoriPlugin.ProviderName, this.id.ToString()}}
-        //                 });
-        //     }
-        //
-        //     return result;
-        // }
     }
 
     public class AnimeBaseConverter : CustomCreationConverter<AnimeBase>
     {
-        public override AnimeBase Create(Type objectType) {
+        public override AnimeBase Create(Type objectType)
+        {
             return new Anime();
         }
     }
