@@ -72,6 +72,8 @@ namespace Jellyfin.Plugin.Shikimori.Providers
                 result.Provider = ShikimoriPlugin.ProviderName;
             }
 
+            result.ResultLanguage = "ru";
+
             return result;
         }
 
