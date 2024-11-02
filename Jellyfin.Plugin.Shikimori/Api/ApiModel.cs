@@ -185,6 +185,8 @@ namespace Jellyfin.Plugin.Shikimori.Api
         {
             text = Regex.Replace(text, @"\[.*?\]", ""); // Replace all occurrences of text in square brackets.
             text = Regex.Replace(text, @" ([.,;: ])", "$1"); // Fix trailing spaces left by previous substitue.
+            text = Regex.Replace(text, @"[\[\]]", ""); // There are cases when we have
+                                                       // left over square brackets from previous substitute
 
             return text;
         }
