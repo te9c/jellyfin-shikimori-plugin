@@ -8,14 +8,17 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 {
     public class ShikimoriExternalId : IExternalId
     {
-        public string ProviderName => ShikimoriPlugin.ProviderName;
+        public string ProviderName 
+            => ShikimoriPlugin.ProviderName;
 
-        public string Key => ShikimoriPlugin.ProviderId;
+        public string Key 
+            => ShikimoriPlugin.ProviderId;
 
         public ExternalIdMediaType? Type
             => null;
 
-        public string? UrlFormatString => ShikimoriPlugin.ShikimoriBaseUrl + "/animes/{0}";
+        public string? UrlFormatString 
+            => ShikimoriPlugin.ShikimoriBaseUrl + "/animes/{0}";
 
         public bool Supports(IHasProviderIds item)
             => item is Series || item is Movie;
