@@ -11,23 +11,25 @@ namespace Jellyfin.Plugin.Shikimori.Providers
     {
         private readonly ILogger<ShikimoriSeriesProvider> _log;
         private readonly ShikimoriClientManager _shikimoriClientManager;
+        private readonly ProviderIdResolver _providerIdResolver;
         public string Name { get; } = ShikimoriPlugin.ProviderName;
 
 
-        public ShikimoriSeriesProvider(ILogger<ShikimoriSeriesProvider> logger, ShikimoriClientManager shikimoriClientManager)
+        public ShikimoriSeriesProvider(ILogger<ShikimoriSeriesProvider> logger,
+                                       ShikimoriClientManager shikimoriClientManager,
+                                       ProviderIdResolver providerIdResolver)
         {
             _log = logger;
             _shikimoriClientManager = shikimoriClientManager;
+            _providerIdResolver = providerIdResolver;
         }
 
         public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(SeriesInfo searchInfo, CancellationToken cancellationToken)
         {
             var result = new List<RemoteSearchResult>();
 
-            var aid = searchInfo.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
             long id;
-
-            if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
+            if (_providerIdResolver.TryResolve(searchInfo, out id))
             {
                 var aidResult = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
                 if (aidResult != null)
@@ -49,14 +51,17 @@ namespace Jellyfin.Plugin.Shikimori.Providers
         {
             var result = new MetadataResult<Series>();
             Anime? anime = null;
-            var aid = info.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
+
             long id;
-            if (!String.IsNullOrEmpty(aid) && long.TryParse(aid, out id))
+            if (_providerIdResolver.TryResolve(info, out id))
             {
+                _log.LogWarning("TryResolve: True");
                 anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
-                result.QueriedById = true;
+                result.QueriedById = false;
             }
-            else
+
+
+            if (anime == null)
             {
                 _log.LogDebug($"Searching {info.Name}");
                 anime = await _shikimoriClientManager.GetAnimeAsync(info.Name, cancellationToken, AnimeType.Tv).ConfigureAwait(false);
@@ -69,9 +74,10 @@ namespace Jellyfin.Plugin.Shikimori.Providers
                 result.Item = anime.ToSeries();
                 // result.People = anime.GetPeopleInfo();
                 result.Provider = ShikimoriPlugin.ProviderName;
+
+                result.ResultLanguage = "ru";
             }
 
-            result.ResultLanguage = "ru";
 
             return result;
         }

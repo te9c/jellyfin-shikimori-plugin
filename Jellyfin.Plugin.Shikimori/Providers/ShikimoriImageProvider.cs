@@ -11,11 +11,14 @@ namespace Jellyfin.Plugin.Shikimori.Providers
     public class ShikimoriImageProvider : IRemoteImageProvider
     {
         private ShikimoriClientManager _shikimoriClientManager;
+        private ProviderIdResolver _providerIdResolver;
         public string Name { get; } = ShikimoriPlugin.ProviderName;
 
-        public ShikimoriImageProvider(ShikimoriClientManager shikimoriClientManager)
+        public ShikimoriImageProvider(ShikimoriClientManager shikimoriClientManager,
+                                      ProviderIdResolver providerIdResolver)
         {
             _shikimoriClientManager = shikimoriClientManager;
+            _providerIdResolver = providerIdResolver;
         }
 
         public bool Supports(BaseItem item)
@@ -30,12 +33,10 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
         public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
-            var aid = item.ProviderIds.GetValueOrDefault(ShikimoriPlugin.ProviderId);
-            long id;
-
             var result = new List<RemoteImageInfo>();
 
-            if (aid == null || !long.TryParse(aid, out id))
+            long id;
+            if (!_providerIdResolver.TryResolve(item, out id))
             {
                 return result;
             }

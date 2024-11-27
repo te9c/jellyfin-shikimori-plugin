@@ -9,6 +9,7 @@ namespace Jellyfin.Plugin.Shikimori
         public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
         {
             serviceCollection.AddSingleton<ShikimoriClientManager>();
+            serviceCollection.AddSingleton<ProviderIdResolver>();
         }
     }
 }
