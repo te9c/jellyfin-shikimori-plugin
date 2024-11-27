@@ -205,7 +205,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
             item.CommunityRating = score;
             item.OfficialRating = FormatRating(rating);
             item.Studios = studios?.Select(i => { return i.name; }).ToArray();
-            item.ProviderIds = new Dictionary<string, string> { { ShikimoriPlugin.ProviderName, id.ToString() } };
+            item.ProviderIds = new Dictionary<string, string> { { ShikimoriPlugin.ProviderId, id.ToString() } };
         }
 
         public Movie ToMovie()
