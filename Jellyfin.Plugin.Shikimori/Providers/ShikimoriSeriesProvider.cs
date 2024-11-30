@@ -49,13 +49,15 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
         {
+            _log.LogDebug($"GetMetadata on {info.Name}");
+
             var result = new MetadataResult<Series>();
             Anime? anime = null;
 
             long id;
             if (_providerIdResolver.TryResolve(info, out id))
             {
-                _log.LogWarning("TryResolve: True");
+                _log.LogDebug($"Resolved with id: {id}");
                 anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
                 result.QueriedById = false;
             }
@@ -70,12 +72,15 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (anime != null)
             {
+                _log.LogDebug("Metadata found");
+
                 result.HasMetadata = true;
                 result.Item = anime.ToSeries();
-                // result.People = anime.GetPeopleInfo();
                 result.Provider = ShikimoriPlugin.ProviderName;
 
                 result.ResultLanguage = "ru";
+            } else {
+                _log.LogDebug("Metadata is not found");
             }
 
 

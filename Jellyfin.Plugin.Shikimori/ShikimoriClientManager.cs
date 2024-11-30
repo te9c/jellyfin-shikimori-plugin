@@ -31,6 +31,7 @@ namespace Jellyfin.Plugin.Shikimori
 
         public async Task<List<RemoteSearchResult>> SearchAnimesAsync(string name, CancellationToken cancellationToken, AnimeType? type = null, int? year = null)
         {
+            _logger.LogError($"Name: {name}");
             var searchResult = (await _shikimoriApi.SearchAnimesAsync(new SearchOptions
             {
                 search = name,

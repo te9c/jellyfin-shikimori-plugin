@@ -46,16 +46,17 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             return result;
         }
 
-        // So basically I should parse path that movieinfo have to get
-        // attribute like [shiki-XXXXX], where XXXXX is id on shikimroi
         public async Task<MetadataResult<Movie>> GetMetadata(MovieInfo info, CancellationToken cancellationToken)
         {
+            _log.LogDebug($"GetMetadata on {info.Name}");
+
             var result = new MetadataResult<Movie>();
             Anime? anime = null;
 
             long id;
             if (_providerIdResolver.TryResolve(info, out id))
             {
+                _log.LogDebug($"Resolved with id: {id}");
                 anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
                 result.QueriedById = true;
             }
@@ -69,11 +70,15 @@ namespace Jellyfin.Plugin.Shikimori.Providers
 
             if (anime != null)
             {
+                _log.LogDebug("Metadata found");
+
                 result.HasMetadata = true;
                 result.Item = anime.ToMovie();
-                // result.People = anime.GetPeopleInfo();
                 result.Provider = ShikimoriPlugin.ProviderName;
+
                 result.ResultLanguage = "ru";
+            } else {
+                _log.LogDebug("Metadata is not found");
             }
 
             return result;
