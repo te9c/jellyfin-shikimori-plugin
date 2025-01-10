@@ -81,12 +81,12 @@ namespace Jellyfin.Plugin.Shikimori
             };
         }
 
-        public async Task<Anime?> GetAnimeAsync(string name, CancellationToken cancellationToken, AnimeType? type = null)
+        public async Task<Anime?> GetAnimeAsync(string name, CancellationToken cancellationToken, AnimeType? type = null, int? year = null)
         {
             var searchResult = await _shikimoriApi.SearchAnimesAsync(new SearchOptions
             {
                 search = name,
-                limit = 1,
+                limit = year is null ? 1 : 10,
                 kind = type switch
                 {
                     AnimeType.Movie => string.Join(',', MovieKinds),
@@ -97,13 +97,23 @@ namespace Jellyfin.Plugin.Shikimori
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            searchResult = searchResult.Where(i => {
+                if (year.HasValue && i.airedOn != null && i.airedOn.year.HasValue)
+                {
+                    // One year tolerance
+                    return Math.Abs(year.Value - i.airedOn.year.Value) <= 1;
+                }
+
+                return true;
+            });
+
             if (!searchResult.Any())
             {
                 return null;
             }
 
-            var anime = await GetAnimeAsync(searchResult.First().id, cancellationToken, type).ConfigureAwait(false);
-            return anime;
+            var anime = searchResult.First();
+            return await GetAnimeAsync(anime.id, cancellationToken, type).ConfigureAwait(false);
         }
     }
 }

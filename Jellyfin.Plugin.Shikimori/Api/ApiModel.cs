@@ -8,9 +8,6 @@ using MediaBrowser.Model.Providers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-// Yeah I know that this model is total mess.
-// But it's works. kinda.
-
 namespace Jellyfin.Plugin.Shikimori.Api
 {
     public class Data
@@ -35,7 +32,6 @@ namespace Jellyfin.Plugin.Shikimori.Api
         public string? kind { get; set; }
         public string? ids { get; set; }
 
-        // kostil
         public override string ToString()
         {
             List<string> result = new List<string>();
