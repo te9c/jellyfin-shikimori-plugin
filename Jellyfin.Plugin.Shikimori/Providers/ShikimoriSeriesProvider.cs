@@ -65,7 +65,7 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             if (anime == null)
             {
                 _log.LogDebug($"Searching {info.Name}");
-                anime = await _shikimoriClientManager.GetAnimeAsync(info.Name, cancellationToken, AnimeType.Tv).ConfigureAwait(false);
+                anime = await _shikimoriClientManager.GetAnimeAsync(SearchHelper.PreprocessTitle(info.Name), cancellationToken, AnimeType.Tv).ConfigureAwait(false);
                 result.QueriedById = false;
             }
 
