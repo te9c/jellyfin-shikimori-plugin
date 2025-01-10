@@ -16,7 +16,7 @@ public class ProviderIdResolver {
         }
 
         // try to find id in file name
-        if (info is ItemLookupInfo itemLookupInfo) {
+        if (info is ItemLookupInfo itemLookupInfo && !String.IsNullOrEmpty(itemLookupInfo.Path)) {
             const string regexPattern = @"\[shikimori-?(\d+)\]";
             Regex regex = new Regex(regexPattern, RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
 

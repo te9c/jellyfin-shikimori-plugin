@@ -59,9 +59,8 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             {
                 _log.LogDebug($"Resolved with id: {id}");
                 anime = await _shikimoriClientManager.GetAnimeAsync(id, cancellationToken).ConfigureAwait(false);
-                result.QueriedById = false;
+                result.QueriedById = true;
             }
-
 
             if (anime == null)
             {
@@ -82,7 +81,6 @@ namespace Jellyfin.Plugin.Shikimori.Providers
             } else {
                 _log.LogDebug("Metadata is not found");
             }
-
 
             return result;
         }
