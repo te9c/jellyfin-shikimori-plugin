@@ -53,6 +53,14 @@
                         <option id="optLanguageRussian" value="Russian">Russian</option>
                     </select>
                 </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="chkShowCensored" name="chkShowCensored" type="checkbox" is="emby-checkbox" />
+                        <span>Находить 18+ контент</span>
+                    </label>
+                </div>
+
                 <div>
                     <button is="emby-button" type="submit" class="raised button-submit block emby-button">
                         <span>Save</span>
@@ -74,6 +82,7 @@
                     document.getElementById('titlePreference').value = config.TitlePreference;
                     document.getElementById('originalTitlePreference').value = config.OriginalTitlePreference;
                     document.getElementById('genreTitleLanguagePreference').value = config.GenreTitleLanguagePreference;
+                    document.getElementById('chkShowCensored').checked = config.ShowCensored;
 
                     Dashboard.hideLoadingMsg();
                 })
@@ -87,6 +96,7 @@
                     config.TitlePreference = document.getElementById('titlePreference').value;
                     config.OriginalTitlePreference = document.getElementById('originalTitlePreference').value;
                     config.GenreTitleLanguagePreference = document.getElementById('genreTitleLanguagePreference').value;
+                    config.ShowCensored = document.getElementById('chkShowCensored').checked;
 
                     ApiClient.updatePluginConfiguration(shikimoriConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);

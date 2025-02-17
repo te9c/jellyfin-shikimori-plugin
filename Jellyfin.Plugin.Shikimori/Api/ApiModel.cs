@@ -31,6 +31,7 @@ namespace Jellyfin.Plugin.Shikimori.Api
         public int limit { get; set; } = 1;
         public string? kind { get; set; }
         public string? ids { get; set; }
+        public bool censored { get; set; } = true;
 
         public override string ToString()
         {
@@ -47,6 +48,11 @@ namespace Jellyfin.Plugin.Shikimori.Api
             if (ids != null)
             {
                 result.Add($"ids: \"{ids.ToString()}\"");
+            }
+            if (censored) {
+                result.Add("censored: true");
+            } else {
+                result.Add("censored: false");
             }
 
             return string.Join(',', result);

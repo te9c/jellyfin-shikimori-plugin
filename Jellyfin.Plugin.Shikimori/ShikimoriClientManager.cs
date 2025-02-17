@@ -17,7 +17,7 @@ namespace Jellyfin.Plugin.Shikimori
         private const string _clientId = "4jL1c_MSgZ4qjC8yNotwYGXQmhJ9wFCukQMm_48vGCY";
 
         public readonly string[] MovieKinds = { "movie" };
-        public readonly string[] TvKinds = { "tv", "ona" };
+        public readonly string[] TvKinds = { "tv", "ona", "ova" };
 
         private ShikimoriApi _shikimoriApi;
         private ILogger _logger;
@@ -42,6 +42,7 @@ namespace Jellyfin.Plugin.Shikimori
                     AnimeType.Tv => string.Join(',', TvKinds),
                     _ => null
                 },
+                censored = !ShikimoriPlugin.Instance!.Configuration.ShowCensored
             }).ConfigureAwait(false)).ToList();
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -68,7 +69,7 @@ namespace Jellyfin.Plugin.Shikimori
 
         public async Task<Anime?> GetAnimeAsync(long id, CancellationToken cancellationToken, AnimeType? type = null)
         {
-            var anime = await _shikimoriApi.GetAnimeAsync(id).ConfigureAwait(false);
+            var anime = await _shikimoriApi.GetAnimeAsync(id, !ShikimoriPlugin.Instance!.Configuration.ShowCensored).ConfigureAwait(false);
             if (anime == null) return anime;
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -93,6 +94,7 @@ namespace Jellyfin.Plugin.Shikimori
                     AnimeType.Tv => string.Join(',', TvKinds),
                     _ => null
                 },
+                censored = !ShikimoriPlugin.Instance!.Configuration.ShowCensored
             }).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();

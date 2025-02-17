@@ -116,11 +116,12 @@ namespace Jellyfin.Plugin.Shikimori.Api
             return graphQlResponse?.data?.animes == null ? Enumerable.Empty<AnimeBase>() : graphQlResponse.data.animes;
         }
 
-        public async Task<Anime?> GetAnimeAsync(long id)
+        public async Task<Anime?> GetAnimeAsync(long id, bool censored = true)
         {
             var options = new SearchOptions()
             {
                 ids = id.ToString(),
+                censored = censored
             };
             var request = new GraphQlRequest()
             {

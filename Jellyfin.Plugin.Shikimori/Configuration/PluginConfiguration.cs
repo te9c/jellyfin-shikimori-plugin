@@ -23,6 +23,7 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
             OriginalTitlePreference = TitlePreferenceType.Romaji;
             SearchTitlePreference = TitlePreferenceType.Russian;
             GenreTitleLanguagePreference = GenreTitleLanguagePreferenceType.Russian;
+            ShowCensored = false;
         }
         private int _searchLimit;
         public int SearchLimit
@@ -36,5 +37,6 @@ namespace Jellyfin.Plugin.Shikimori.Configuration
         public TitlePreferenceType OriginalTitlePreference { get; set; }
         public TitlePreferenceType SearchTitlePreference { get; set; }
         public GenreTitleLanguagePreferenceType GenreTitleLanguagePreference { get; set; }
+        public bool ShowCensored { get; set; }
     }
 }
